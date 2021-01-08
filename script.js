@@ -1,6 +1,6 @@
 $(document).ready(function() {
+//declaring global variables
 var v1zconde = "&appid=0672c5c44771cae78024eb3855e55f10";
-var nowMoment = moment();
 var citySearchListStringified = localStorage.getItem("citySearchList");
 var citySearchList = JSON.parse(citySearchListStringified);
 var dateToday = moment().format("MMMM Do YYYY");
@@ -11,10 +11,10 @@ if (citySearchList == null) {
   citySearchList = {};
 }
 
-  init();
+init();
 
 function init(){
-
+  //hide the rows with the info
   $("#forecast-w").hide();
   $("#current-w").hide();
   createCityList(citySearchList);
@@ -23,22 +23,21 @@ function init(){
 }
 
 function forecast(city){
-    $("forecast").empty();
-    $("forecast-w").show();
+    $("#forecast").empty();
+    $("#forecast-title").empty();
   $.ajax({
     url: "https://api.openweathermap.org/data/2.5/forecast?q=" + city +"&units=imperial" + v1zconde,
     method: "GET"
   }).then(function(response) {
-    console.log(response);
     var allForecast = $("#forecast");
+    var forecastTitle = $("<h3>").text("5-Day Forecast");
+    $("#forecast-title").append(forecastTitle);
     for (i=1; i <6; i++){
     var forecastDay = $("<div>");
     forecastDay.addClass("col-md bg-primary text-white ml-3 mb-3 rounded text-center");
     forecastDay.attr("id", "forecast-"+i);
     var forecastDate = $("<div>").text(moment().add(i,'days').format('MM/DD/YY'));
-    
     var weatherIcon = $("<img>");
-    console.log(searchValue);
     weatherIcon.attr(
       "src",
       "https://openweathermap.org/img/w/" + response.list[searchValue].weather[0].icon + ".png"
@@ -46,7 +45,6 @@ function forecast(city){
     var forecastTemp = $("<div>").text("Temp: " + response.list[searchValue].main.temp)
     var forecastHum = $("<div>").text("Humidity: " + response.list[searchValue].main.humidity)
     searchValue = searchValue + 8
-    
     forecastDay.append(forecastDate);
     forecastDay.append(weatherIcon);
     forecastDay.append(forecastTemp);
@@ -71,10 +69,8 @@ function createCityList(citySearchList){
   
     for (var j = 0; j < splitStr.length; j++) {
       splitStr[j] = splitStr[j].charAt(0).toUpperCase() + splitStr[j].substring(1);
-      console.log(splitStr[j]);
     }
     var titleCasedCity = splitStr.join(" ");
-    console.log(titleCasedCity)
     cityListEntry.text(titleCasedCity);
     $("#city-list").append(cityListEntry);
   }
@@ -83,20 +79,19 @@ function createCityList(citySearchList){
 
 function weather(city){
   $("#city-date-icon").empty();
+  $("#forecast-w").show();
+  $("#current-w").show();
   $.ajax({
     url: "https://api.openweathermap.org/data/2.5/weather?q="+ city +"&units=imperial" + v1zconde,
     method: "GET"
   }).then(function(response) {
-    console.log(response);
     var cwDate = $("<h4>").text(dateToday).addClass("text-center");
     var cwName = $("<h4>").text(response.name).addClass("text-center");
     var cwCurrentTemp = $("<p>").text("Current Temp: " + response.main.temp + "F");
     var cwCurrentHumidity = $("<p>").text("Current Humidity: " + response.main.humidity + "%");
     var cwWind = $("<p>").text("Current Wind: " + response.wind.speed + "MPH");
     longitude = response.coord.lon;
-    console.log(longitude);
     latitude = response.coord.lat;
-    console.log(latitude);
     var weatherIcon = $("<img>");
     weatherIcon.attr(
       "src",
@@ -117,7 +112,6 @@ function getUvIndex(longitude, latitude){
     url: "http://api.openweathermap.org/data/2.5/uvi?lat="+ latitude + "&lon="+ longitude + v1zconde,
     method: "GET"
   }).then(function(uvIndex) {
-    console.log(uvIndex);
     var cwCurrentUv = $("<p>").text("Current uvIndex: "+  uvIndex.value);
     $("#city-date-icon").append(cwCurrentUv);
     
@@ -140,10 +134,7 @@ $("#search-button").on("click", function(event) {
   //populateCityWeather(city, citySearchList);
   createCityList(citySearchList);
   weather(city);
-  forecast(city);
-  $("#current-w").show();
-  $("#forecast-w").show();
-  
+  forecast(city); 
   }
 
 });
@@ -152,8 +143,6 @@ $("#city-list").on("click", "button", function(event) {
   event.preventDefault();
   searchValue = 2;
   var city = $(this).text();
-  $("#forecast-w").show();
-  $("#current-w").show();
   weather(city);
   forecast(city);
 });
@@ -161,7 +150,8 @@ $("#city-list").on("click", "button", function(event) {
 $("#clear-history").on("click", function() {
   $("#city-list").empty();
   $("#city-date-icon").empty();
-  $("#forecast").empty();
+  $("#forecast-w").hide();
+  $("#current-w").hide();
   citySearchList = {};
   localStorage.setItem("citySearchList", JSON.stringify(citySearchList));
 })
