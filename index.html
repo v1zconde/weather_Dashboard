@@ -15,12 +15,14 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-light bg-light">
+  <!-- header of the page as navbar -->
+  <nav class="navbar navbar-dark bg-dark">
     <span class="navbar-brand mb-0 h1 mx-auto">Weather Dashboard</span>
   </nav>
-
+<!-- container to have everything under the navbar -->
   <div class="container-fluid border">
     <div class="row">
+      <!-- left side of the page with the search and history -->
       <div class="col-md-3 bg-light border">
         <label class="my-1 font-weight-bold">Search for a City</label>
         <div class="input-group mb-3">
@@ -33,29 +35,26 @@
         <button class="btn btn-primary mb-3" type="button" id="clear-history">
           Clear history
         </button>
-
         <div class="card">
           <ul class="list-group" id="city-list">
           </ul>
         </div>
       </div>
+      <!-- right side of the page with info of current weather -->
       <div class="col-md-9">
         <div id="current-w" class="card">
           <div class="card-body">
               <div id="city-date-icon"></div>
           </div>
       </div>
+      <!-- right side of the page with the info of forecast -->
       <div class="container-fluid" id="forecast-w">
-        <div id="forecast-title" class="row">
-          
+        <div  class="row text-center">
+          <div class="col" id="forecast-title"></div>
         </div>
-
         <div id="forecast" class="row">
-          
         </div>
-
       </div>
-
       </div>
     </div>
     <!-- Optional JavaScript -->
