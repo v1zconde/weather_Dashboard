@@ -4,21 +4,26 @@ var v1zconde = "&appid=0672c5c44771cae78024eb3855e55f10";
 var citySearchListStringified = localStorage.getItem("citySearchList");
 var citySearchList = JSON.parse(citySearchListStringified);
 var dateToday = moment().format("MMMM Do YYYY");
+var lastSearch = localStorage.getItem("lastSearch");
 var longitude;
 var latitude;
 searchValue = 2;
 if (citySearchList == null) {
   citySearchList = {};
 }
+if (lastSearch == null) {
+  lastSearch = "";
+}
 
 init();
 //initial function
 function init(){
   //hide the rows with the info
-  var keys = Object.keys(citySearchList);
   createCityList(citySearchList);
-  weather(keys[keys.length-1]);
-  forecast(keys[keys.length-1]); 
+  if (lastSearch !== ""){
+  weather(lastSearch);
+  forecast(lastSearch); 
+}
 }
 //function to get the forecast 
 function forecast(city){
@@ -130,16 +135,19 @@ $("#search-button").on("click", function(event) {
     .val()
     .trim()
     .toLowerCase();
-
+  
   if (city != "") {
     //Check to see if there is any text entered
     citySearchList[city] = true;
     localStorage.setItem("citySearchList", JSON.stringify(citySearchList));
+    localStorage.setItem("lastSearch", city);
     searchValue = 2;
+    
   //populateCityWeather(city, citySearchList);
   createCityList(citySearchList);
   weather(city);
   forecast(city); 
+  $("#city-input").val("");
   }
 
 });
@@ -148,6 +156,7 @@ $("#city-list").on("click", "button", function(event) {
   event.preventDefault();
   searchValue = 2;
   var city = $(this).text();
+  localStorage.setItem("lastSearch", city);
   weather(city);
   forecast(city);
 });
@@ -160,6 +169,7 @@ $("#clear-history").on("click", function() {
   $("#current-w").hide();
   citySearchList = {};
   localStorage.setItem("citySearchList", JSON.stringify(citySearchList));
+  localStorage.setItem("lastSearch", "");
 })
 
 
