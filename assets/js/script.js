@@ -15,11 +15,10 @@ init();
 //initial function
 function init(){
   //hide the rows with the info
-  $("#forecast-w").hide();
-  $("#current-w").hide();
+  var keys = Object.keys(citySearchList);
   createCityList(citySearchList);
- 
- 
+  weather(keys[keys.length-1]);
+  forecast(keys[keys.length-1]); 
 }
 //function to get the forecast 
 function forecast(city){
@@ -50,9 +49,7 @@ function forecast(city){
     forecastDay.append(forecastTemp);
     forecastDay.append(forecastHum);
     allForecast.append(forecastDay);
-    
   }
-
   });
 
 }
